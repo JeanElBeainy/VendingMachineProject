@@ -30,5 +30,18 @@ public class Main {
                 Helper.userInput(input, vm, balance, order);
             }
         }
+         boolean answer = true;
+        if(order.getLength() != 0) {
+            while(answer) {
+                System.out.println("""
+                    Would you like to have a receipt? (y/n)
+                    WARNING: receipt will be saved in Documents as "Receipt". Any file named similarly
+                    inside your Documents will be overwritten.
+                """);
+                String input = scanner.nextLine();
+                answer = Helper.userReceipt(input, vm, order);
+            }
+        }
+        System.out.println("End of program.");
     }
 }
