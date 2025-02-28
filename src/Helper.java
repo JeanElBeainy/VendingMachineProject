@@ -15,6 +15,36 @@ public class Helper {
     }
 
     public static boolean updateUserBalance(String input, Balance balance) throws IOException {
+        if(input.length() >= 5 || input.length() == 2) {
+            return false;
+        }
+        try {
+            Integer.parseInt(input);
+        } catch (NumberFormatException e) {
+            return false;
+        }
+        if(input.length() == 1 && Integer.parseInt(input) > 1) {
+            return false;
+        }
+        if(Double.parseDouble(input) > 1.0) {
+            return false;
+        }
+        if(Character.isDigit(input.charAt(0))) {
+            if(input.length() > 1 && input.charAt(1) == '.' && Integer.parseInt(String.valueOf(input.charAt(0))) > 1) {
+                for(int i = 2; i < input.length(); i++) {
+                    if(!Character.isDigit(input.charAt(i))) {
+                        return false;
+                    }
+                }
+            }
+            addBalance(input, balance);
+            System.out.println("Balance added. Current balance: " + balance.getBalance());
+        }
+        return true;
+    }
+
+    
+    public static boolean updateUserBalance(String input, Balance balance) throws IOException {
         try {
             Double.parseDouble(input);
         } catch (NumberFormatException e) {
