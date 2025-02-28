@@ -28,6 +28,53 @@ public class Helper {
         return true;
     }
 
+    public static void adminPrivilege(VendingMachine vm) throws IOException {
+        Admin admin = new Admin();
+        label:
+        while(true) {
+            admin.listCommand();
+            Scanner adminScanner = new Scanner(System.in);
+            String adminInput = adminScanner.nextLine();
+            switch (adminInput) {
+                case "add":
+                    System.out.println("Enter product information with the following format:");
+                    System.out.println("Type,Name,Price,Quantity,Row,Col. The row must be a valid letter.");
+                    String addInput = adminScanner.nextLine();
+                    String[] array = addInput.split(",");
+                    if (addItemAsAdmin(array, vm)) {
+                        admin.addItem(vm, array[0], array[1],
+                                Double.parseDouble(array[2]),
+                                Integer.parseInt(array[3]),
+                                (int) array[4].charAt(0) % 'A',
+                                Integer.parseInt(array[5]) - 1);
+                        System.out.println("Item added successfully.");
+                        break;
+                    }
+                    else {
+                        System.out.println("Invalid input.");
+                    }
+                    break;
+                case "remove":
+                    System.out.println("Enter product row & column with the following format:");
+                    System.out.println("row column. Example: B5. row as a letter and column as a number.");
+                    String input = adminScanner.nextLine();
+                    if(removeItemAsAdmin(input, vm)) {
+                        admin.removeItem(vm, (int) input.charAt(0) % 'A', Character.getNumericValue(input.charAt(1))-1);
+                    }
+                    break;
+                case "list":
+                    vm.displayStock();
+                    break;
+                case "exit":
+                    vm.displayStock();
+                    break label;
+                default:
+                    System.out.println("Caught an unrecognized option. Please try again.");
+                    break;
+            }
+        }
+    }
+    
     public static boolean checkType(String input) {
         return input.equals("Can") || input.equals("Bottle") || input.equals("Bag") || input.equals("Sweet");
     }
