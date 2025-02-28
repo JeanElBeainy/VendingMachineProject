@@ -28,38 +28,6 @@ public class Helper {
         return true;
     }
 
-    public static void removeItemAsAdmin(String input, VendingMachine vm) throws IOException {
-        if(checkProductCoordinates(input, vm)) {
-            vm.removeItem((int) input.charAt(0) % 'A', Character.getNumericValue(input.charAt(1))-1);
-            System.out.println("Item removed.");
-        }
-        System.out.println("Error removing item. Please try again.");
-    }
-    
-    public static boolean addItemAsAdmin(String[] list, VendingMachine vm) { // check add validity
-        if(list.length != 6) {
-            System.out.println("Invalid command.");
-            return false;
-        }
-        if(!checkType(list[0])) {
-            System.out.println("Invalid command.");
-            return false;
-        }
-        try {
-            Double.parseDouble(list[2]);
-            Integer.parseInt(list[3]);
-            Integer.parseInt(list[5]);
-        } catch (NumberFormatException e) {
-            System.out.println("Invalid command.");
-            return false;
-        }
-        if(Integer.parseInt(list[3]) > 10) {
-            System.out.println("Stock cannot exceed 10.");
-            return false;
-        }
-        return !checkProductCoordinates(list[4]+list[5], vm);
-    }
-    
     public static void adminPrivilege(VendingMachine vm) throws IOException {
         Admin admin = new Admin();
         label:
@@ -78,7 +46,7 @@ public class Helper {
                                 Double.parseDouble(array[2]),
                                 Integer.parseInt(array[3]),
                                 (int) array[4].charAt(0) % 'A',
-                                Integer.parseInt(array[5]) - 1);
+                                Integer.parseInt(array[5])-1);
                         System.out.println("Item added successfully.");
                         break;
                     }
@@ -95,7 +63,7 @@ public class Helper {
                     }
                     break;
                 case "list":
-                    vm.displayStock();
+                    admin.list(vm);
                     break;
                 case "exit":
                     vm.displayStock();
@@ -106,7 +74,44 @@ public class Helper {
             }
         }
     }
-    
+
+    private static boolean removeItemAsAdmin(String input, VendingMachine vm) throws IOException {
+        if(checkProductCoordinates(input, vm) && isNotEmpty(input, vm)) {
+            return true;
+        }
+        System.out.println("Error removing item.");
+        return false;
+    }
+
+    private static boolean addItemAsAdmin(String[] list, VendingMachine vm) { // check add validity
+        if(list.length != 6 || !checkType(list[0])) {
+            System.out.println("Error: enter exactly 6 valid terms separated by commas.");
+            return false;
+        }
+        try {
+            Double.parseDouble(list[2]);
+            Integer.parseInt(list[3]);
+            Integer.parseInt(list[5]);
+        } catch (NumberFormatException e) {
+            System.out.println("Exception: Numbers caught as String.");
+            return false;
+        }
+        if(Integer.parseInt(list[3]) > 10) {
+            System.out.println("Stock cannot exceed 10.");
+            return false;
+        }
+        if(!checkProductCoordinates(list[4]+list[5], vm)) {
+            System.out.println("Coordinate error. Please try again.");
+            return false;
+        }
+        if(isNotEmpty(list[4]+list[5], vm)) {
+            System.out.println("Cell already in use. Please choose another empty cell.");
+            return false;
+        }
+        return true;
+        //return checkProductCoordinates(list[4]+list[5], vm) && !isNotEmpty(list[4]+list[5], vm);
+    }
+
     public static boolean checkType(String input) {
         return input.equals("Can") || input.equals("Bottle") || input.equals("Bag") || input.equals("Sweet");
     }
@@ -181,12 +186,8 @@ public class Helper {
             }
         }
     }
- public static boolean userReceipt(String input, VendingMachine vm, Order order) throws IOException {
-        System.out.println("""
-                    Would you like to have a receipt? (y/n)
-                    WARNING: receipt will be saved in Documents as "Receipt". Any file named similarly
-                    inside your Documents will be overwritten.
-                """);
+
+    public static boolean userReceipt(String input, VendingMachine vm, Order order) throws IOException {
         if(input.isEmpty()) {
             System.out.println("Caught an empty String. Please try again.");
             return true;
