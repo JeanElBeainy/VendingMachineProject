@@ -11,9 +11,28 @@ public class VendingMachine {
         Helper.displayStock(array,maxLengthOfStockName);
         printIntroduction();
     }
-
+    public Item getItem(int i, int j) {
+        return array[i][j];
+    }
     
+    public void addItem(String type, String name, double price, int quantity, int row, int col) throws IOException {
+        array[row][col] = Helper.getProductType(type, name, price, quantity);
+        rewriteStock();
+        System.out.println("Item added to stock.");
+        System.out.println("Proof: " + array[row][col].getType()
+                + " " + array[row][col].getName()
+                + " " + array[row][col].getPrice()
+                + " " + array[row][col].getQuantity());
+    }
 
+    public void removeItem(int row, int col) throws IOException {
+        array[row][col] = new Item();
+        rewriteStock();
+        System.out.println("Item removed from stock.");
+        System.out.println("Proof: " + array[row][col].getType() + " " + array[row][col].getName());
+        loadStock();
+    }
+    
     public int getMaxLengthOfStockName() {
         return maxLengthOfStockName;
     }
