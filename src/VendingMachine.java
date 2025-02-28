@@ -1,0 +1,98 @@
+import java.io.*;
+
+public class VendingMachine {
+
+    public final Item[][] array = new Item[8][7];
+    private final String stockFile = "Data/Stock";
+    private int maxLengthOfStockName = new Item().getName().length();
+
+    public VendingMachine() throws IOException {
+        loadStock();
+        Helper.displayStock(array,maxLengthOfStockName);
+        printIntroduction();
+    }
+
+    
+
+    public int getMaxLengthOfStockName() {
+        return maxLengthOfStockName;
+    }
+
+    public void printIntroduction() {
+        System.out.println("Welcome to the vending machine program. Please type a valid number " +
+                "to add funds to your balance, or a valid coordinate to order an item." +
+                " To exit, type: exit");
+    }
+
+    private void removeNullElement() {
+        for(int i = 0; i < array.length; i++) {
+            for(int j = 0; j < array[i].length; j++) {
+                if(array[i][j] == null) {
+                    array[i][j] = new Item();
+                }
+                else {
+                    if(array[i][j].getName().length() > maxLengthOfStockName) {
+                        maxLengthOfStockName = array[i][j].getName().length();
+                    }
+                }
+            }
+        }
+    }
+
+    public int getRow() {
+        return array.length;
+    }
+
+    public int getCol() {
+        return array[0].length;
+    }
+
+    public void displayStock() {
+        Helper.displayStock(array,maxLengthOfStockName);
+    }
+
+    public void orderItem(int i, int j, Balance balance) throws IOException {
+        i = i % 'A';
+        array[i][j].setQuantity(array[i][j].getQuantity() - 1);
+        balance.subtractBalance(array[i][j].getPrice());
+        Helper.setCarryBalance(balance.getBalance());
+        rewriteStock();
+        Helper.displayStock(array,maxLengthOfStockName);
+    }
+
+    private void rewriteStock() throws IOException {
+        FileWriter updateStock = new FileWriter(stockFile);
+        for(int i = 0; i < array.length; i++) {
+            for(int j = 0; j < array[0].length; j++) {
+                if(!array[i][j].getType().equals(new Item().getType())) {
+                    updateStock.write(array[i][j].getType() + ","
+                            + array[i][j].getName() + ","
+                            + array[i][j].getPrice() + ","
+                            + array[i][j].getQuantity() + ","
+                            + i + ","
+                            + j + "\n");
+                }
+            }
+        }
+        updateStock.close();
+    }
+
+    private void loadStock() throws IOException {
+        BufferedReader br = new BufferedReader(new FileReader(stockFile));
+        String line;
+        while((line = br.readLine()) != null) {
+            String[] parts = line.split(",");
+            int row = Integer.parseInt(parts[4]);
+            int col = Integer.parseInt(parts[5]);
+            int quantity = Integer.parseInt(parts[3]);
+            if(quantity == 0) {
+                array[row][col] = new Item();
+            }
+            else {
+                array[row][col] = Helper.getProductType(parts[0], parts[1], Double.parseDouble(parts[2]), quantity);
+            }
+        }
+        removeNullElement();
+        rewriteStock();
+    }
+}
