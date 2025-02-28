@@ -7,6 +7,7 @@ import java.util.ArrayList;
 
 public class Order {
     static ArrayList<String[]> arrayList;
+    double totalPrice = 0;
 
     public Order() {
         arrayList = new ArrayList<>();
@@ -14,6 +15,7 @@ public class Order {
 
     public void addProduct(Item item) {
         String[] array = new String[]{item.getName(), String.valueOf(item.getPrice()), "1"};
+        totalPrice += item.getPrice();
         if(getLength() == 0) {
             arrayList.add(array);
         }
@@ -46,17 +48,15 @@ public class Order {
         writer.write("Product" + " ".repeat(calculateSpacing("Quantity".length(), getMaxLengthOfStockName)) + adjustStructure + "Price" + adjustStructure + "Quantity");
         writer.newLine();
         writer.newLine();
-        double totalPrice = 0;
 
         for(String[] strings : arrayList) {
             writer.write(strings[0] + (" ".repeat(calculateSpacing(strings[0].length(), getMaxLengthOfStockName))) + adjustStructure
             + strings[1] + adjustStructure + " ".repeat("Quantity".length()/2)
             + strings[2]);
             writer.newLine();
-            totalPrice += Double.parseDouble(strings[1]);
         }
         writer.newLine();
-        writer.write("Total Price: " + totalPrice + "$ (US Dollar(s))");
+        writer.write("Total Price: " + Math.round(totalPrice*10)/10.0 + "$ (US Dollar(s))");
         System.out.println("File Path: " + path);
         writer.close();
     }
