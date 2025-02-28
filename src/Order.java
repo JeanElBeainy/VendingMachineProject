@@ -56,7 +56,7 @@ public class Order {
             writer.newLine();
         }
         writer.newLine();
-        writer.write("Total Price: " + Math.round(totalPrice*10)/10.0 + "$ (US Dollar(s))");
+        writer.write("Total Price: " + Math.round(totalPrice*100)/100.0 + "$ (US Dollar(s))");
         System.out.println("File Path: " + path);
         writer.close();
     }
