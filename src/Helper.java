@@ -132,7 +132,28 @@ public class Helper {
             }
         }
     }
-
+ public static boolean userReceipt(String input, VendingMachine vm, Order order) throws IOException {
+        System.out.println("""
+                    Would you like to have a receipt? (y/n)
+                    WARNING: receipt will be saved in Documents as "Receipt". Any file named similarly
+                    inside your Documents will be overwritten.
+                """);
+        if(input.isEmpty()) {
+            System.out.println("Caught an empty String. Please try again.");
+            return true;
+        }
+        else if(input.equals("y")) {
+            order.listOrders(vm.getMaxLengthOfStockName());
+            return false;
+        }
+        else if(input.equals("n")) {
+            return false;
+        }
+        else {
+            System.out.println("Invalid input. Please try again.");
+            return true;
+        }
+    }
 
     public static void displayStock(Item[][] array, int maxLengthOfStockName) {
         int letterSectionCount = 'A'; //65 in ASCII
