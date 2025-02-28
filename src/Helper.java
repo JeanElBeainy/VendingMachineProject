@@ -28,6 +28,38 @@ public class Helper {
         return true;
     }
 
+    public static void removeItemAsAdmin(String input, VendingMachine vm) throws IOException {
+        if(checkProductCoordinates(input, vm)) {
+            vm.removeItem((int) input.charAt(0) % 'A', Character.getNumericValue(input.charAt(1))-1);
+            System.out.println("Item removed.");
+        }
+        System.out.println("Error removing item. Please try again.");
+    }
+    
+    public static boolean addItemAsAdmin(String[] list, VendingMachine vm) { // check add validity
+        if(list.length != 6) {
+            System.out.println("Invalid command.");
+            return false;
+        }
+        if(!checkType(list[0])) {
+            System.out.println("Invalid command.");
+            return false;
+        }
+        try {
+            Double.parseDouble(list[2]);
+            Integer.parseInt(list[3]);
+            Integer.parseInt(list[5]);
+        } catch (NumberFormatException e) {
+            System.out.println("Invalid command.");
+            return false;
+        }
+        if(Integer.parseInt(list[3]) > 10) {
+            System.out.println("Stock cannot exceed 10.");
+            return false;
+        }
+        return !checkProductCoordinates(list[4]+list[5], vm);
+    }
+    
     public static void adminPrivilege(VendingMachine vm) throws IOException {
         Admin admin = new Admin();
         label:
