@@ -16,6 +16,9 @@ public class Main {
             else if(input.equals("exit")) {
                 break;
             }
+            else if(input.equals("list")) {
+                vm.displayStock();
+            }
             else if(input.equals("Admin")) {
                 System.out.print("Enter admin password: ");
                 String password = scanner.nextLine();
