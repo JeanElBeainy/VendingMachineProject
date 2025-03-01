@@ -7,13 +7,7 @@ public class Admin {
     }
 
     public void listCommand() {
-        System.out.println("""
-                Commands:
-                add: to add item.
-                remove: to remove item.
-                list: to list vending machine.
-                exit: to exit as Admin.
-                """);
+        Helper.listAdminCommands();
     }
 
     public void list(VendingMachine vm) {
