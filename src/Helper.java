@@ -8,13 +8,7 @@ public class Helper {
     private static final String BALANCE_FILE = "Data/Balance";
     private static final String ADMIN_DATA = "Data/Password";
 
-    public static double getCarryBalance() throws IOException {
-        BufferedReader br = new BufferedReader(new FileReader(BALANCE_FILE));
-        String bal = br.readLine();
-        return Double.parseDouble(bal);
-    }
-
-    public static boolean updateUserBalance(String input, Balance balance) throws IOException {
+    private static boolean updateUserBalance(String input, Balance balance) throws IOException {
         try {
             Double.parseDouble(input);
         } catch (NumberFormatException e) {
@@ -26,6 +20,39 @@ public class Helper {
         addBalance(input, balance);
         System.out.println("Balance added. Current balance: " + balance.getBalance());
         return true;
+    }
+
+    private static void addBalance(String input, Balance balance) throws IOException {
+        balance.addBalance(Math.round((Double.parseDouble(input))*100.0)/100.0);
+        setCarryBalance(balance.getBalance());
+    }
+
+    public static double getCarryBalance() throws IOException {
+        BufferedReader br = new BufferedReader(new FileReader(BALANCE_FILE));
+        String bal = br.readLine();
+        return Double.parseDouble(bal);
+    }
+
+    public static void setCarryBalance(double carryBalance) throws IOException {
+        FileWriter updateStock = new FileWriter(BALANCE_FILE);
+        updateStock.write((String.valueOf(carryBalance)));
+        updateStock.close();
+    }
+
+    public static boolean checkPassword(String password) throws IOException {
+        BufferedReader br = new BufferedReader(new FileReader(ADMIN_DATA));
+        String pass = br.readLine();
+        return password.equals(pass);
+    }
+
+    public static void listAdminCommands() {
+        System.out.println("""
+                Commands:
+                add: to add item.
+                remove: to remove item.
+                list: to list vending machine.
+                exit: to exit as Admin.
+                """);
     }
 
     public static void adminPrivilege(VendingMachine vm) throws IOException {
@@ -75,17 +102,22 @@ public class Helper {
         }
     }
 
-    private static boolean removeItemAsAdmin(String input, VendingMachine vm) throws IOException {
-        if(checkProductCoordinates(input, vm) && isNotEmpty(input, vm)) {
-            return true;
+    private static boolean removeItemAsAdmin(String input, VendingMachine vm) {
+        if(!checkProductCoordinates(input, vm)) {
+            System.out.println("Coordinate error.");
+            return false;
         }
-        System.out.println("Error removing item.");
-        return false;
+        if(!isNotEmpty(input, vm)) {
+            System.out.println("Cell is empty.");
+            return false;
+        }
+        System.out.println("Item removed successfully.");
+        return true;
     }
 
     private static boolean addItemAsAdmin(String[] list, VendingMachine vm) { // check add validity
         if(list.length != 6 || !checkType(list[0])) {
-            System.out.println("Error: enter exactly 6 valid terms separated by commas.");
+            System.out.println("Error: enter exactly 6 valid terms separated by commas or type invalid.");
             return false;
         }
         try {
@@ -112,7 +144,7 @@ public class Helper {
         //return checkProductCoordinates(list[4]+list[5], vm) && !isNotEmpty(list[4]+list[5], vm);
     }
 
-    public static boolean checkType(String input) {
+    private static boolean checkType(String input) {
         return input.equals("Can") || input.equals("Bottle") || input.equals("Bag") || input.equals("Sweet");
     }
 
@@ -129,23 +161,6 @@ public class Helper {
 
     public static boolean isNotEmpty(String input, VendingMachine vm) {
         return !(vm.getItem(input.charAt(0) % 'A', Character.getNumericValue(input.charAt(1))-1).getType().equals(new Item().getType()));
-    }
-
-    private static void addBalance(String input, Balance balance) throws IOException {
-        balance.addBalance(Math.round((Double.parseDouble(input))*100.0)/100.0);
-        setCarryBalance(balance.getBalance());
-    }
-
-    public static void setCarryBalance(double carryBalance) throws IOException {
-        FileWriter updateStock = new FileWriter(BALANCE_FILE);
-        updateStock.write((String.valueOf(carryBalance)));
-        updateStock.close();
-    }
-
-    public static boolean checkPassword(String password) throws IOException {
-        BufferedReader br = new BufferedReader(new FileReader(ADMIN_DATA));
-        String pass = br.readLine();
-        return password.equals(pass);
     }
 
     public static Item getProductType(String item, String name, double price, int quantity) {
@@ -167,8 +182,8 @@ public class Helper {
     }
 
     public static void userInput(String input, VendingMachine vm, Balance balance, Order order) throws IOException {
-        if(!Helper.updateUserBalance(input, balance)) {
-            if(Helper.checkProductCoordinates(input, vm)) {
+        if(!updateUserBalance(input, balance)) {
+            if(checkProductCoordinates(input, vm)) {
                 if(vm.getItem(input.charAt(0) % 'A', Character.getNumericValue(input.charAt(1)-1)).getQuantity() == 0) {
                     System.out.println("Item is out of stock.");
                     return;
@@ -209,6 +224,7 @@ public class Helper {
         int letterSectionCount = 'A'; //65 in ASCII
         int count = 0;
         int isOddCount = 0;
+        boolean isLargerThanNine = false;
         StringBuilder s = new StringBuilder();
         String threeSpace = "   ";
         String maxVendingLength = "-".repeat("Quantity:".length() - 1 + array[0].length * (6 + maxLengthOfStockName + "|".length()) + "  X  |".length());
@@ -217,6 +233,10 @@ public class Helper {
             isOddCount++;
         }
         for(int i = 0; i < array[0].length; i++) {
+            if(i + 1 >= 10 && !isLargerThanNine) {
+                isOddCount--;
+                isLargerThanNine = true;
+            }
             s.append(threeSpace).append(" ".repeat(maxLengthOfStockName/2+isOddCount)).append(i+1).append(" ".repeat(maxLengthOfStockName/2)).append(threeSpace);
         }
         s.deleteCharAt(s.length()-1).append("|").append("\n").append(maxVendingLength).append("\n");
