@@ -3,7 +3,7 @@ import java.io.*;
 public class VendingMachine {
 
     private final Item[][] array = new Item[8][7];
-    private final String stockFile = "Data/Stock";
+    private final String STOCK_FILE = "Data/Stock";
     private int maxLengthOfStockName;
 
     public VendingMachine() throws IOException {
@@ -82,7 +82,7 @@ public class VendingMachine {
     }
 
     private void rewriteStock() throws IOException {
-        FileWriter updateStock = new FileWriter(stockFile);
+        FileWriter updateStock = new FileWriter(STOCK_FILE);
         for(int i = 0; i < array.length; i++) {
             for(int j = 0; j < array[0].length; j++) {
                 if(!array[i][j].getType().equals(new Item().getType())) {
@@ -99,7 +99,7 @@ public class VendingMachine {
     }
 
     private void loadStock() throws IOException {
-        BufferedReader br = new BufferedReader(new FileReader(stockFile));
+        BufferedReader br = new BufferedReader(new FileReader(STOCK_FILE));
         String line;
         while((line = br.readLine()) != null) {
             String[] parts = line.split(",");
