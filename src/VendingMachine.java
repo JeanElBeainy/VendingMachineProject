@@ -4,7 +4,7 @@ public class VendingMachine {
 
     private final Item[][] array = new Item[8][7];
     private final String stockFile = "Data/Stock";
-    private int maxLengthOfStockName = new Item().getName().length();
+    private int maxLengthOfStockName;
 
     public VendingMachine() throws IOException {
         loadStock();
