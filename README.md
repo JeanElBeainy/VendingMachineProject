@@ -17,7 +17,7 @@ This terminal-based vending machine program loads its inventory from a text file
 - Item Display: View available items along with their prices and quantities in a user-friendly format.
 - Fund Management: Users can add funds to the vending machine before making a purchase.
 - Product Selection: Users can select items using unique codes assigned to each product.
-- Admin Controls: Admins can manage the vending machine's inventory, including adding and removing items.
+- Admin Controls: Admins can manage the vending machine's inventory, including adding, removing and restock pre-existing items.
 - Real-Time Updates: Any modifications made by users or admins are immediately reflected in the inventory.
 - Receipt Generation: After a purchase, users can choose to save a detailed receipt to their documents.
 
