@@ -3,12 +3,12 @@
 ### Aim of The Project
 
 
-The Vending Machine Project is a Java-based application that simulates a vending machine, showcasing the principles of Object-Oriented Programming (OOP). This program allows users to interact with a virtual vending machine, where they can view a structured menu of items, add funds, and select products for purchase. Additionally, an admin interface is provided for managing the inventory in real-time.
+The Vending Machine Project is a Java-based application that simulates a vending machine, showcasing the principles of Object-Oriented Programming (OOP). This program allows users to interact with a virtual vending machine, where they can view a well-stuctured menu of items, add funds, and select products for purchase. Additionally, an admin interface is provided for managing the inventory in real-time.
 
 ### Project Description
 
 
-This terminal-based vending machine program loads its inventory from a text file, serving as a simple database. When the program starts, it retrieves the available stock and any remaining balance from previous transactions. The data is updated dynamically, ensuring that any changes made by users or admins are saved immediately. The program is designed to handle exceptions gracefully, preventing crashes due to invalid selections or empty slots. At the end of a transaction, users have the option to save a receipt to their documents if they made a purchase.
+This terminal-based vending machine program loads its inventory from a text file, serving as a simple database. When the program starts, it retrieves the available stock and any remaining balance from previous transactions. The data is updated dynamically, ensuring that any changes made by users or admins are saved immediately. The program is designed to handle exceptions, preventing crashes due to invalid selections or empty slots. At the end of a transaction, users have the option to save a receipt to their documents as a text file if they made a purchase.
 
 ****
 
@@ -19,7 +19,7 @@ This terminal-based vending machine program loads its inventory from a text file
 - Product Selection: Users can select items using unique codes assigned to each product.
 - Admin Controls: Admins can manage the vending machine's inventory, including adding and removing items.
 - Real-Time Updates: Any modifications made by users or admins are immediately reflected in the inventory.
-- Receipt Generation: After a purchase, users can opt to save a detailed receipt to their documents.
+- Receipt Generation: After a purchase, users can choose to save a detailed receipt to their documents.
 
 ****
 
