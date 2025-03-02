@@ -37,9 +37,9 @@ The Item class is responsible for creating product objects within the vending ma
 #### Subclasses of Item:
 
 - Bag: Represents snack bags.
-- Can: Represents canned beverages.
+- Can: may represent canned beverages or food if any.
 - Bottle: Represents bottled drinks.
-- Sweet: Represents candy and sweets.
+- Sweet: Represents candies and sweets.
 
 ### Order Class
 
