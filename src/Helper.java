@@ -50,6 +50,7 @@ public class Helper {
                 Commands:
                 add: to add item.
                 remove: to remove item.
+                restock: to restock an existing item.
                 list: to list vending machine.
                 exit: to exit as Admin.
                 """);
@@ -89,6 +90,30 @@ public class Helper {
                         admin.removeItem(vm, (int) input.charAt(0) % 'A', Character.getNumericValue(input.charAt(1))-1);
                     }
                     break;
+                case "restock":
+                    System.out.println("Enter Row & column of the product with the quantity specified next to it separated by a comma.");
+                    System.out.println("Example: B5,6 -> Section B5, add 6 items.");
+                    String restockInput = adminScanner.nextLine();
+                    String[] restockArray = restockInput.split(",");
+                    if(restockArray.length == 2) {
+                        if(checkProductCoordinates(restockArray[0], vm)
+                                && isNotEmpty(restockArray[0], vm)
+                                && isDigit(restockArray[1])
+                                && vm.getItem(restockArray[0].charAt(0) % 'A', Character.getNumericValue(restockArray[0].charAt(1))-1).getQuantity()
+                                + Integer.parseInt(restockArray[1]) <= 10) {
+                            vm.getItem(restockArray[0].charAt(0) % 'A', Character.getNumericValue(restockArray[0].charAt(1))-1).setQuantity(
+                                    vm.getItem(restockArray[0].charAt(0) % 'A', Character.getNumericValue(restockArray[0].charAt(1))-1).getQuantity() + Integer.parseInt(restockArray[1])
+                            );
+                            System.out.println("Item restocked.");
+                        }
+                        else {
+                            System.out.println("Error with coordinates or quantity.");
+                        }
+                    }
+                    else {
+                        System.out.println("Input was not entered correctly.");
+                    }
+                    break;
                 case "list":
                     admin.list(vm);
                     break;
@@ -100,6 +125,20 @@ public class Helper {
                     break;
             }
         }
+    }
+
+    private static boolean isDigit(String s) {
+        try {
+            Integer.parseInt(s);
+        } catch (NumberFormatException e) {
+            System.out.println("Quantity is not an integer.");
+            return false;
+        }
+        if(Integer.parseInt(s) < 0) {
+            System.out.println("Stock is negative.");
+            return false;
+        }
+        return true;
     }
 
     private static boolean removeItemAsAdmin(String input, VendingMachine vm) {
@@ -116,8 +155,12 @@ public class Helper {
     }
 
     private static boolean addItemAsAdmin(String[] list, VendingMachine vm) { // check add validity
-        if(list.length != 6 || !checkType(list[0])) {
+        if(list.length != 6) {
             System.out.println("Error: enter exactly 6 valid terms separated by commas or type invalid.");
+            return false;
+        }
+        if(!checkType(list[0])) {
+            System.out.println("Product type is invalid. Item should be either: Bottle, Can, Bag, Sweet.");
             return false;
         }
         try {
@@ -126,6 +169,10 @@ public class Helper {
             Integer.parseInt(list[5]);
         } catch (NumberFormatException e) {
             System.out.println("Exception: Numbers caught as String.");
+            return false;
+        }
+        if(list[2].length() > 4) {
+            System.out.println("Product price is invalid.");
             return false;
         }
         if(Integer.parseInt(list[3]) > 10) {
@@ -137,7 +184,7 @@ public class Helper {
             return false;
         }
         if(isNotEmpty(list[4]+list[5], vm)) {
-            System.out.println("Cell already in use. Please choose another empty cell.");
+            System.out.println("Cell already in use. Please choose an empty cell.");
             return false;
         }
         return true;
