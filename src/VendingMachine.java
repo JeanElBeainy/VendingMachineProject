@@ -40,9 +40,16 @@ public class VendingMachine {
     }
 
     public void printIntroduction() {
-        System.out.println("Welcome to the vending machine program. Please type a valid number " +
-                "to add funds to your balance, or a valid coordinate to order an item." +
-                " To exit, type: exit");
+        System.out.println("""
+                Welcome to the Vending Machine program!
+                List of commands :
+                list : to list the vending machine on the terminal
+                Admin : to log in as admin
+                exit : to exit the program.
+                To add funds, type a valid number between 0 and 1
+                To select an item, type a combination of a capital letter and a number. Example : B4
+                The program will process the input and check if you are trying to add funds or select an item.
+                """);
     }
 
     private void removeNullElement() {
